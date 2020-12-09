@@ -51,7 +51,7 @@ function App() {
 
   return (
 
-    <Jumbotron className="middle">
+    <Jumbotron>
 
       <img src={"./corn.png"} id="corn"/>
       <div class="d-flex p-12">

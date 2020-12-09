@@ -22,14 +22,14 @@ html {
 .row {
   margin-bottom: 2rem;
   border-radius: .3rem;
-  width: 15em;
+  --bs-gutter-x: 0rem!important;
 }
 
 .middle {
   vertical-align: middle;
 }
 
-*, ::after, ::before {
+* {
   box-sizing: content-box!important;
 }
 
