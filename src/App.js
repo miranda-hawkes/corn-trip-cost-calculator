@@ -8,6 +8,7 @@ import './App.css';
 
 function App() {
   const [costOfTrip, setCostOfTrip] = useState(0);
+  const [numTrips, setNumTrips] = useState(1);
   const [clear, setClear] = useState(false);
 
   useEffect( () => {
@@ -26,13 +27,15 @@ function App() {
     if(numBags == '')
     return;
     let sum = numBags * 0.25
+    let numTrips = numBags
     setCostOfTrip(sum);
+    setNumTrips(numTrips);
     document.querySelector('#num-bags').value = "";
   }
 
   return (
 
-    <Container>
+    <Container className="justify-content-md-center">
 
       <h1 className="header">Corn Trip Cost Calculator</h1>
     
@@ -62,14 +65,25 @@ function App() {
         <Form>
           <Row className="justify-content-md-center">
 
-            <Col xs lg="4">
+            <Col xs lg="3">
+
+              <Form.Label >
+                Will take
+              </Form.Label>
+
+              <Form.Control plaintext readOnly id="result-num-trips" value={numTrips + ' trips'}/>
+
+            </Col>  
+
+            <Col xs lg="3">
 
               <Form.Label >
                 At a cost of
               </Form.Label>
-              <Form.Control plaintext readOnly defaultValue="email@example.com" id="result" value={'£' + costOfTrip}/>
 
-            </Col>
+              <Form.Control plaintext readOnly id="result" value={'£' + costOfTrip}/>
+
+            </Col>          
           </Row>
         </Form>
       </Container>
