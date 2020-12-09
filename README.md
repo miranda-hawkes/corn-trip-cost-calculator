@@ -6,5 +6,5 @@ An app to calculate travel costs for moving a specified amount of corn across a 
 
 ```
 npm install
-npm start
+npm run start:dev
 ```
