@@ -17,7 +17,7 @@ function App() {
     e.preventDefault();
     if(clear) setClear(false);
     let numBags = document.querySelector('#num-bags').value
-    if(numBags == '')
+    if(numBags == '' || numBags < 1)
     return;
     let numTrips = numBags * 2  - 1;
     let sum = numTrips * 0.25;
