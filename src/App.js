@@ -29,16 +29,16 @@ function App() {
 
   const Results = () => (
     <div>
-      <Row className="justify-content-md-center">
-            <Col xs lg="6" className="result">
-              <Form.Label >
-                Will take
-              </Form.Label>
-              <Form.Control readOnly id="result-num-trips" value={numTrips + ' trips'}/>
-            </Col>
-          </Row>
+      <Row >
+        <Col xs lg="6" className="result">
+          <Form.Label >
+            Will take
+          </Form.Label>
+          <Form.Control readOnly id="result-num-trips" value={numTrips + ' trips'}/>
+        </Col>
+      </Row>
 
-      <Row className="justify-content-md-center">
+      <Row>
         <Col xs lg="6" className="result">
           <Form.Label >
             At a cost of
@@ -52,11 +52,11 @@ function App() {
   return (
 
     <Jumbotron>
-      <div class="d-flex p-2">
+      <div class="d-flex p-8">
         <h1 className="text-center">Corn Trip Cost Calculator</h1>
       </div>
 
-      <div class="d-flex p-2">
+      <div class="d-flex p-8">
           <Form>
             <Row>
               <Col xs lg="6">
