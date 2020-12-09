@@ -1,5 +1,15 @@
-body {
+html {
   text-align: center;
+  background-color:#0cce6b;
+}
+
+#root {
+  background-color:#0cce6b;
+}
+
+#corn {
+  width: 20%;
+  margin-top: 2em;
 }
 
 .jumbotron {
@@ -21,7 +31,7 @@ body {
 
 h1.text-center {
   font-weight: 800;
-  margin-top: 2em;
+  margin-top: 1em;
   margin-bottom: 2em;
 }
 
@@ -35,11 +45,15 @@ button {
 }
 
 #result-num-trips, #result {
-  color: grey;
-  background-color: white;
+  color: white;
+  background-color: #c73e1d;
   border: 1px solid #c73e1d!important;  
 }
 
 .result {
   text-align: left;
+}
+
+label {
+  color: black;
 }

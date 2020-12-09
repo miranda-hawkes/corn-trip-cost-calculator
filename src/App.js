@@ -19,8 +19,8 @@ function App() {
     let numBags = document.querySelector('#num-bags').value
     if(numBags == '')
     return;
-    let sum = numBags * 0.25
-    let numTrips = numBags
+    let numTrips = numBags * 2  - 1;
+    let sum = numTrips * 0.25;
     setCostOfTrip(sum);
     setNumTrips(numTrips);
     setShowResults(true);
@@ -30,16 +30,16 @@ function App() {
   const Results = () => (
     <div>
       <Row >
-        <Col xs lg="6" className="result">
+        <Col md lg="12" className="result">
           <Form.Label >
             Will take
           </Form.Label>
-          <Form.Control readOnly id="result-num-trips" value={numTrips + ' trips'}/>
+          <Form.Control readOnly id="result-num-trips" value={numTrips + ' trips over the bridge'}/>
         </Col>
       </Row>
 
       <Row>
-        <Col xs lg="6" className="result">
+        <Col md lg="12" className="result">
           <Form.Label >
             At a cost of
           </Form.Label>
@@ -52,22 +52,24 @@ function App() {
   return (
 
     <Jumbotron>
-      <div class="d-flex p-8">
+
+      <img src={"./corn.png"} id="corn"/>
+      <div class="d-flex p-12">
         <h1 className="text-center">Corn Trip Cost Calculator</h1>
       </div>
 
-      <div class="d-flex p-8">
+      <div class="d-flex p-12">
           <Form>
             <Row>
-              <Col xs lg="6">
+              <Col xs lg="12">
                 <Form.Group controlId="num-bags">
-                  <Form.Control type="number" placeholder="Enter number of bags of corn" />
+                  <Form.Control type="number" placeholder="Number of bags of corn" />
                 </Form.Group>
               </Col>
             </Row>
 
             <Row>
-              <Col xs lg="6">
+              <Col xs lg="12">
                 <Button variant="primary" type="submit" onClick={Calculate}>
                   Calculate
                 </Button>
