@@ -5,6 +5,7 @@ import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import './App.css';
+import { Jumbotron } from 'react-bootstrap';
 
 function App() {
   const [costOfTrip, setCostOfTrip] = useState(0);
@@ -27,54 +28,60 @@ function App() {
   }
 
   const Results = () => (
-    <Row className="justify-content-md-center">
-      <Col xs lg="2">
-        <Form.Label >
-          Will take
-        </Form.Label>
-        <Form.Control plaintext readOnly id="result-num-trips" value={numTrips + ' trips'}/>
-      </Col>  
+    <div>
+      <Row className="justify-content-md-center">
+            <Col xs lg="6">
+              <Form.Label >
+                Will take
+              </Form.Label>
+              <Form.Control readOnly id="result-num-trips" value={numTrips + ' trips'}/>
+            </Col>
+          </Row>
 
-      <Col xs lg="2">
-        <Form.Label >
-          At a cost of
-        </Form.Label>
-        <Form.Control plaintext readOnly id="result" value={'£' + costOfTrip.toFixed(2)}/>
-      </Col>          
-    </Row>
+      <Row className="justify-content-md-center">
+        <Col xs lg="6">
+          <Form.Label >
+            At a cost of
+          </Form.Label>
+          <Form.Control readOnly id="result" value={'£' + costOfTrip.toFixed(2)}/>
+        </Col>
+      </Row>
+    </div>
   )
 
   return (
 
-    <Container className="justify-content-md-center">
+    <Jumbotron>
+      <div class="d-flex p-2">
+        <h1 className="text-center">Corn Trip Cost Calculator</h1>
+      </div>
 
-      <h1 className="header">Corn Trip Cost Calculator</h1>
-    
-      <Container>
+      <div class="d-flex p-2">
+          <Form>
+            <Row>
+              <Col xs lg="6">
+                <Form.Group controlId="num-bags">
+                  <Form.Control type="number" placeholder="Enter number of bags of corn" />
+                </Form.Group>
+              </Col>
+            </Row>
 
-        <Form>
-          <Row className="justify-content-md-center">
-            <Col xs lg="4">
-              <Form.Group controlId="num-bags">
-                <Form.Control type="number" placeholder="Enter number of bags of corn" />
-              </Form.Group>
-            </Col>
-          </Row>
+            <Row>
+              <Col xs lg="6">
+                <Button variant="primary" type="submit" onClick={Calculate}>
+                  Calculate
+                </Button>
+              </Col>
+            </Row>
 
-          <Row className="justify-content-md-center">
-            <Col xs lg="4">
-              <Button variant="primary" type="submit" onClick={Calculate}>
-                Calculate
-              </Button>
-            </Col>
-          </Row>
+            { showResults ? <Results /> : null }
 
-          { showResults ? <Results /> : null }
+          </Form>
+      </div>
 
-        </Form>
-      </Container>
+    </Jumbotron>
+     
 
-    </Container> 
   );
 }
 
