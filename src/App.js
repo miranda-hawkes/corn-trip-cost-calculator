@@ -30,7 +30,7 @@ function App() {
   const Results = () => (
     <div>
       <Row className="justify-content-md-center">
-            <Col xs lg="6">
+            <Col xs lg="6" className="result">
               <Form.Label >
                 Will take
               </Form.Label>
@@ -39,7 +39,7 @@ function App() {
           </Row>
 
       <Row className="justify-content-md-center">
-        <Col xs lg="6">
+        <Col xs lg="6" className="result">
           <Form.Label >
             At a cost of
           </Form.Label>

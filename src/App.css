@@ -33,3 +33,13 @@ button {
   background-color: #a14ebf!important;
   border-color: #a14ebf!important;
 }
+
+#result-num-trips, #result {
+  color: grey;
+  background-color: white;
+  border: 1px solid #c73e1d!important;  
+}
+
+.result {
+  text-align: left;
+}
