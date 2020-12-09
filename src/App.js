@@ -75,13 +75,13 @@ function App() {
 
             </Col>  
 
-            <Col xs lg="3">
+            <Col xs lg="">
 
               <Form.Label >
                 At a cost of
               </Form.Label>
 
-              <Form.Control plaintext readOnly id="result" value={'£' + costOfTrip}/>
+              <Form.Control plaintext readOnly id="result" value={'£' + costOfTrip.toFixed(2)}/>
 
             </Col>          
           </Row>
