@@ -8,17 +8,9 @@ import './App.css';
 
 function App() {
   const [costOfTrip, setCostOfTrip] = useState(0);
-  const [numTrips, setNumTrips] = useState(1);
+  const [numTrips, setNumTrips] = useState(0);
   const [clear, setClear] = useState(false);
-
-  useEffect( () => {
-    document.querySelector('#result').value = "";
-  },[])
-  
-  useEffect( () => {
-    if(clear)
-    document.querySelector('#result').value = "";
-  })
+  const [showResults, setShowResults] = useState(false)
 
   const Calculate = (e) => {
     e.preventDefault();
@@ -30,8 +22,27 @@ function App() {
     let numTrips = numBags
     setCostOfTrip(sum);
     setNumTrips(numTrips);
+    setShowResults(true);
     document.querySelector('#num-bags').value = "";
   }
+
+  const Results = () => (
+    <Row className="justify-content-md-center">
+      <Col xs lg="2">
+        <Form.Label >
+          Will take
+        </Form.Label>
+        <Form.Control plaintext readOnly id="result-num-trips" value={numTrips + ' trips'}/>
+      </Col>  
+
+      <Col xs lg="2">
+        <Form.Label >
+          At a cost of
+        </Form.Label>
+        <Form.Control plaintext readOnly id="result" value={'£' + costOfTrip.toFixed(2)}/>
+      </Col>          
+    </Row>
+  )
 
   return (
 
@@ -57,36 +68,12 @@ function App() {
               </Button>
             </Col>
           </Row>
+
+          { showResults ? <Results /> : null }
+
         </Form>
       </Container>
 
-      <Container>
-
-        <Form>
-          <Row className="justify-content-md-center">
-
-            <Col xs lg="3">
-
-              <Form.Label >
-                Will take
-              </Form.Label>
-
-              <Form.Control plaintext readOnly id="result-num-trips" value={numTrips + ' trips'}/>
-
-            </Col>  
-
-            <Col xs lg="">
-
-              <Form.Label >
-                At a cost of
-              </Form.Label>
-
-              <Form.Control plaintext readOnly id="result" value={'£' + costOfTrip.toFixed(2)}/>
-
-            </Col>          
-          </Row>
-        </Form>
-      </Container>
     </Container> 
   );
 }
