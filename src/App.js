@@ -34,7 +34,7 @@ function App() {
           <Form.Label >
             Will take
           </Form.Label>
-          <Form.Control readOnly id="result-num-trips" value={numTrips + ' trips over the bridge'}/>
+          <Form.Control readOnly id="result-num-trips" value={numTrips + ' ferry trips'}/>
         </Col>
       </Row>
 
