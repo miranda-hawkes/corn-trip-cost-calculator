@@ -17,6 +17,11 @@ function App({tripPlanner, calculate}) {
   const numBagsSelector = "#num-bags";
   const numGeeseSelector = "#num-geese";
   const [tripDetails, setTripDetails] = useState([]);
+  const [currentPage, setCurrentPage] = useState(0)
+  const [numPages, setNumPages] = useState(0)
+
+  const pageLength = 10;
+
 
   const Calculate = (e) => {
     e.preventDefault();
@@ -24,10 +29,10 @@ function App({tripPlanner, calculate}) {
     let numBags = document.querySelector(numBagsSelector).value || 0;
     let numGeese = document.querySelector(numGeeseSelector).value || 0;
     let possibleTrips = tripPlanner(numBags, numGeese).map(trip => trip.trip);
-
     setNumCornInput(numBags);
     setNumGeeseInput(numGeese);
-    
+    setCurrentPage(0)
+    setNumPages(0)
     if(possibleTrips.length > 0) {
       let trip = possibleTrips[0];
       setCostOfTrip(calculate(trip.length));
@@ -35,6 +40,9 @@ function App({tripPlanner, calculate}) {
       setNumTrips(trip.length);
       setShowResults(true);
       setImpossibleTrip(false);
+      if(trip.length > pageLength) {
+        setNumPages(Math.ceil(trip.length/pageLength))
+      }
     } else {
       setCostOfTrip(0);
       setTripDetails([]);
@@ -74,20 +82,45 @@ function App({tripPlanner, calculate}) {
     });
 
     if(trips.includes("x")) return ( <div>Not possible!</div>);
+
+    if(numPages > 0) {
+      tripDescriptions = tripDescriptions.slice(currentPage*pageLength, (currentPage+1)*pageLength)
+    }
     
     return (
-      <ol>
-        {
-          tripDescriptions.map ( function(description, index) {
-            return (
-              <li key={index}>
-                {description}
-              </li>
-            );
-          })
-        }
-      </ol>
-    );
+        <ol start={(currentPage*pageLength)+1}>
+            {
+            tripDescriptions.map ( function(description, index) {
+              return (
+                <li key={index}>
+                  {description}
+                </li>
+              );
+            })
+          }
+        </ol>
+    )
+  }
+  function Pagination() {
+    let page = currentPage;
+    if(numPages > 0) {
+    return (<div>
+      <button className="btn btn-secondary" onClick={previousPage} disabled={currentPage === 0}>Previous</button>Page {currentPage+1} of {numPages-1}<button className="btn btn-secondary" disabled={currentPage >= numPages-1}onClick={nextPage}>Next</button>
+      </div>);
+    } else {
+      return (<div></div>)
+    }
+  }
+
+  const nextPage = (e) => {
+    e.preventDefault();
+
+    setCurrentPage(currentPage+1);
+  }
+  const previousPage = (e) => {
+    e.preventDefault();
+
+    setCurrentPage(currentPage-1);
   }
 
   const Instructions = () => (
@@ -115,6 +148,7 @@ function App({tripPlanner, calculate}) {
       <Form>
         <DisplayInput />
         <Instructions />
+        <Pagination/>
         <Row className="result-row">
           <Col md lg="6" className="result">
             <Form.Label >
