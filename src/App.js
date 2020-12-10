@@ -54,7 +54,7 @@ function App({tripPlanner, calculate}) {
   }
 
   const DisplayError = () => (
-    <div className="d-flex p-12">
+    <div className="d-flex p-12 result-pad">
       <Form>
         <DisplayInput />
         <Row id="not-possible">
