@@ -61,6 +61,12 @@ function App({tripPlanner, calculate}) {
     if (element === "e") return "nothing";
   }
 
+  const Icon = (element) => {
+    if (element === "g") return "./goose.png";
+    if (element === "c") return "./corn.png";
+    if (element === "e") return "./basket.png";
+  }
+
   const DisplayError = () => (
     <div className="d-flex p-12 result-pad">
       <Form>
@@ -78,7 +84,7 @@ function App({tripPlanner, calculate}) {
 
     let tripDescriptions = trips.map ( function(trip, index) {
       const direction = (index % 2 === 0) ? " to the market shore" : " back home";
-      return "Carry " + ItemName(trip) + direction;
+      return {text: "Carry " + ItemName(trip) + direction, icon: Icon(trip)};
     });
 
     if(trips.includes("x")) return ( <div>Not possible!</div>);
@@ -93,7 +99,7 @@ function App({tripPlanner, calculate}) {
             tripDescriptions.map ( function(description, index) {
               return (
                 <li key={index}>
-                  {description}
+                  {description.text} <img src={description.icon} width="32"></img>
                 </li>
               );
             })
