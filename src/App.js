@@ -17,12 +17,12 @@ function App({calculate}) {
     e.preventDefault();
     if(clear) setClear(false);
     let numBags = document.querySelector('#num-bags').value
-    if(numBags === '' || numBags < 1)
-    return;
+    if(numBags === '' || numBags < 1) return;
     let {numTrips, sum} = calculate(numBags)
     setCostOfTrip(sum);
     setNumTrips(numTrips);
     setShowResults(true);
+    
     document.querySelector('#num-bags').value = "";
   }
 
@@ -57,7 +57,7 @@ function App({calculate}) {
         <h1 className="text-center">Corn Trip Cost Calculator</h1>
       </div>
 
-      <div class="d-flex p-12">
+      <div className="d-flex p-12">
           <Form>
             <Row>
               <Col xs lg="12">
