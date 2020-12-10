@@ -7,7 +7,7 @@ import Button from 'react-bootstrap/Button'
 import './App.css';
 import { Jumbotron } from 'react-bootstrap';
 
-function App() {
+function App({calculate}) {
   const [costOfTrip, setCostOfTrip] = useState(0);
   const [numTrips, setNumTrips] = useState(0);
   const [clear, setClear] = useState(false);
@@ -17,10 +17,9 @@ function App() {
     e.preventDefault();
     if(clear) setClear(false);
     let numBags = document.querySelector('#num-bags').value
-    if(numBags == '' || numBags < 1)
+    if(numBags === '' || numBags < 1)
     return;
-    let numTrips = numBags * 2  - 1;
-    let sum = numTrips * 0.25;
+    let {numTrips, sum} = calculate(numBags)
     setCostOfTrip(sum);
     setNumTrips(numTrips);
     setShowResults(true);
@@ -54,7 +53,7 @@ function App() {
     <Jumbotron>
 
       <img src={"./corn.png"} id="corn"/>
-      <div class="d-flex p-12">
+      <div className="d-flex p-12">
         <h1 className="text-center">Corn Trip Cost Calculator</h1>
       </div>
 
