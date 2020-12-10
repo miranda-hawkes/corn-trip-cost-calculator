@@ -20,6 +20,7 @@ test('renders default UI elements', () => {
   expect(button.textContent).toEqual('Calculate');
 });
 
+// Actually an integration test, might mock out calculator call at some point
 test('on button click, renders hidden elements', () => {
   render(<App calculate={calculatorForFerryCost(0.25)} />);
 
@@ -34,7 +35,7 @@ test('on button click, renders hidden elements', () => {
 
   expect(willTake).toBeInTheDocument;
   expect(costOf).toBeInTheDocument;
-  
+
   expect(input[0].value).toEqual('5 ferry trips');
   expect(input[1].value).toEqual('£1.25');
 });
