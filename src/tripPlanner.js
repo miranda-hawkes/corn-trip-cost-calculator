@@ -1,6 +1,3 @@
-
-const homeShoreIsEmpty = (tripState) => tripState.homeShore.numBagsOfCorn == 0 && tripState.homeShore.numberOfGeese == 0;
-
 const tripPlanner = (numBagsOfCorn = 0, numberOfGeese = 0) => {
     let state = {
         homeShore: { numBagsOfCorn, numberOfGeese },
@@ -10,6 +7,36 @@ const tripPlanner = (numBagsOfCorn = 0, numberOfGeese = 0) => {
 
     return moveSearcher(state).filter(notFailedTrip);
 };
+const moveSearcher = (tripState) => {
+    if (theTripIsComplete(tripState)) {
+        return [tripState];
+    }
+    if (theTripHasFailed(tripState)) {
+        return [failTrip(tripState)];
+    }
+    let nextStates = [];
+    if (weAreOnHomeShore(tripState)) {
+        if (gotCorn(tripState)) {
+            nextStates = nextStates.concat([moveCornToMarketShore(tripState)])
+        }
+        if (gotGoose(tripState)) {
+            nextStates = nextStates.concat([moveGooseToMarketShore(tripState)])
+        }
+        nextStates = nextStates.concat([addEmptyTrip(tripState)])
+        
+    } else {
+        if (gotCorn(tripState)) {
+            nextStates = nextStates.concat([moveCornToHomeShore(tripState)])
+        }
+        if (gotGoose(tripState)) {
+            nextStates = nextStates.concat([moveGooseToHomeShore(tripState)])
+        }
+        nextStates = nextStates.concat([addEmptyTrip(tripState)])
+    }
+    return nextStates.reduce((acc, trip) => acc.concat(moveSearcher(trip)), []);
+};
+
+const homeShoreIsEmpty = (tripState) => tripState.homeShore.numBagsOfCorn == 0 && tripState.homeShore.numberOfGeese == 0;
 
 const notFailedTrip = tripState => !tripState.trip.join('').endsWith('x');
 
@@ -89,34 +116,6 @@ const moveCornToMarketShore = (tripState) => ({
 const addEmptyTrip = tripState => ({ ...tripState, trip: tripState.trip.concat(['e']) })
 const failTrip = tripState => ({...tripState, trip: tripState.trip.concat(['x'])})
 
-const moveSearcher = (tripState) => {
-    if (theTripIsComplete(tripState)) {
-        return [tripState];
-    }
-    if (theTripHasFailed(tripState)) {
-        return [failTrip(tripState)];
-    }
-    let nextStates = [];
-    if (weAreOnHomeShore(tripState)) {
-        if (gotCorn(tripState)) {
-            nextStates = nextStates.concat([moveCornToMarketShore(tripState)])
-        }
-        if (gotGoose(tripState)) {
-            nextStates = nextStates.concat([moveGooseToMarketShore(tripState)])
-        }
-        nextStates = nextStates.concat([addEmptyTrip(tripState)])
-        
-    } else {
-        if (gotCorn(tripState)) {
-            nextStates = nextStates.concat([moveCornToHomeShore(tripState)])
-        }
-        if (gotGoose(tripState)) {
-            nextStates = nextStates.concat([moveGooseToHomeShore(tripState)])
-        }
-        nextStates = nextStates.concat([addEmptyTrip(tripState)])
-    }
-    return nextStates.reduce((acc, trip) => acc.concat(moveSearcher(trip)), []);
-};
 /*
 g or c per trip
 
