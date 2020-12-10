@@ -6,23 +6,33 @@ import Button from 'react-bootstrap/Button'
 import './App.css';
 import { Jumbotron } from 'react-bootstrap';
 
-function App({calculate}) {
+function App({tripPlanner, calculate}) {
   const [costOfTrip, setCostOfTrip] = useState(0);
   const [numTrips, setNumTrips] = useState(0);
   const [clear, setClear] = useState(false);
   const [showResults, setShowResults] = useState(false)
+  const [tripDetails, setTripDetails] = useState([])
 
   const Calculate = (e) => {
     e.preventDefault();
     if(clear) setClear(false);
-    let numBags = document.querySelector('#num-bags').value
-    if(numBags === '' || numBags < 1) return;
-    let {numTrips, sum} = calculate(numBags)
-    setCostOfTrip(sum);
-    setNumTrips(numTrips);
+    let numBags = document.querySelector('#num-bags').value || 0
+    let numGeese = document.querySelector('#num-geese').value || 0
+    let possibleTrips = tripPlanner(numBags, numGeese).map(trip => trip.trip);
+    if(possibleTrips.length > 0) {
+    let trip = possibleTrips[0];
+      setCostOfTrip(calculate(trip.length));
+      setTripDetails(trip);
+      setNumTrips(trip.length);
+    } else {
+      setCostOfTrip(0);
+      setTripDetails([]);
+      setNumTrips(0);
+    }
     setShowResults(true);
     
     document.querySelector('#num-bags').value = "";
+    document.querySelector('#num-geese').value = "";
   }
 
   const ItemName = (element) => {
@@ -34,7 +44,7 @@ function App({calculate}) {
   function TripInstructions() {
 
     // temporary array
-    const trips = ["g", "e", "c", "g", "c", "e", "g"];
+    const trips = tripDetails;//["g", "e", "c", "g", "c", "e", "g"];
 
     let tripDescriptions = trips.map ( function(trip, index) {
       const direction = (index % 2 === 0) ? " to the market shore" : " back home";
@@ -114,7 +124,7 @@ function App({calculate}) {
 
             <Row>
               <Col xs lg="12">
-                <Form.Group controlId="num-bags">
+                <Form.Group controlId="num-geese">
                   <Form.Control type="number" placeholder="Number of geese" />
                 </Form.Group>
               </Col>
