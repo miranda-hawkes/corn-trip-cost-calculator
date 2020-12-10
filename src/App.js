@@ -11,18 +11,28 @@ function App({calculate}) {
   const [numTrips, setNumTrips] = useState(0);
   const [clear, setClear] = useState(false);
   const [showResults, setShowResults] = useState(false)
+  const numBagsSelector = "#num-bags";
+  const numGeeseSelector = "#num-geese";
 
   const Calculate = (e) => {
     e.preventDefault();
+
     if(clear) setClear(false);
-    let numBags = document.querySelector('#num-bags').value
+
+    let numBags = document.querySelector(numBagsSelector).value
+    let numGeese = document.querySelector(numGeeseSelector).value
+
     if(numBags === '' || numBags < 1) return;
-    let {numTrips, sum} = calculate(numBags)
+    if(numGeese === '' || numBags < 1) return;
+
+    let {numTrips, sum} = calculate(numBags);
+
     setCostOfTrip(sum);
     setNumTrips(numTrips);
     setShowResults(true);
     
-    document.querySelector('#num-bags').value = "";
+    document.querySelector(numBagsSelector).value = "";
+    document.querySelector(numGeeseSelector).value = "";
   }
 
   const ItemName = (element) => {
@@ -38,15 +48,10 @@ function App({calculate}) {
 
     let tripDescriptions = trips.map ( function(trip, index) {
       const direction = (index % 2 === 0) ? " to the market shore" : " back home";
-
       return "Carry " + ItemName(trip) + direction;
     });
 
-    if(trips.includes("x")) return (
-      <div>
-        Not possible!
-      </div>
-    );
+    if(trips.includes("x")) return ( <div>Not possible!</div>);
     
     return (
       <ol>
@@ -63,73 +68,70 @@ function App({calculate}) {
     );
   }
 
-  const Results = () => (
-    <div id="final-result">
-      <Row className="result-row">
-        <Col md lg="12" className="result">
-          <Form.Label >
-            Trip instructions
-          </Form.Label>
+  const Instructions = () => (
+    <Row className="result-row">
+      <Col md lg="12" className="result">
+        <Form.Label >
+          Trip instructions
+        </Form.Label>
+        <TripInstructions />
+      </Col>
+    </Row>
+  )
 
-          <TripInstructions />
-        </Col>
-      </Row>
-      <Row className="result-row">
-        <Col md lg="12" className="result">
-          <Form.Label >
-            Will take
-          </Form.Label>
-          <Form.Control readOnly id="result-num-trips" value={numTrips + ' ferry trips'}/>
-        </Col>
-      </Row>
-      <Row className="result-row">
-        <Col md lg="12" className="result">
-          <Form.Label >
-            At a cost of
-          </Form.Label>
-          <Form.Control readOnly id="result" value={'£' + costOfTrip.toFixed(2)}/>
-        </Col>
-      </Row>
+  const Results = () => (
+    <div className="d-flex p-12">
+      <Form>
+        <Instructions />
+        <Row className="result-row">
+          <Col md lg="6" className="result">
+            <Form.Label >
+              It will take
+            </Form.Label>
+            <Form.Control readOnly id="result-num-trips" value={numTrips + ' ferry trips'}/>
+          </Col>
+
+          <Col md lg="6" className="result">
+            <Form.Label >
+              At a cost of
+            </Form.Label>
+            <Form.Control readOnly id="result" value={'£' + costOfTrip.toFixed(2)}/>
+          </Col>
+        </Row>
+      </Form>
     </div>
   )
 
   return (
-
     <Jumbotron>
-
       <img src={"./corn.png"} id="corn"/>
       <div className="d-flex p-12">
         <h1 className="text-center">Corn & Geese Trip Calculator</h1>
       </div>
-
       <div className="d-flex p-12">
-          <Form>
-            <Row>
-              <Col xs lg="12">
-                <Form.Group controlId="num-bags">
-                  <Form.Control type="number" placeholder="Number of bags of corn" />
-                </Form.Group>
-              </Col>
-            </Row>
-
-            <Row>
-              <Col xs lg="12">
-                <Form.Group controlId="num-bags">
-                  <Form.Control type="number" placeholder="Number of geese" />
-                </Form.Group>
-              </Col>
-            </Row>
-
-            <Row className="result-row">
-              <Col xs lg="12">
-                <Button variant="primary" type="submit" onClick={Calculate}>
-                  Calculate
-                </Button>
-              </Col>
-            </Row>
-
-
-          </Form>
+        <Form>
+          <Row>
+            <Col xs lg="12">
+              <Form.Group controlId="num-bags">
+                <Form.Control type="number" placeholder="Number of bags of corn" />
+              </Form.Group>
+            </Col>
+          </Row>
+          <Row>
+            <Col xs lg="12">
+              <Form.Group controlId="num-geese">
+                <Form.Control type="number" placeholder="Number of geese" />
+              </Form.Group>
+            </Col>
+          </Row>
+          <Row className="result-row">
+            <Col xs lg="12">
+              <Button variant="primary" type="submit" onClick={Calculate}>
+                Calculate
+              </Button>
+            </Col>
+          </Row>
+        </Form>
       </div>
 
       { showResults ? <Results /> : null }

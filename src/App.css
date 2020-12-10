@@ -63,7 +63,8 @@ button {
 #result-num-trips, #result {
   color: white;
   background-color: #a14ebf;
-  border: 1px solid #a14ebf!important;  
+  border: 1px solid #a14ebf!important;
+  padding-right: 1em;
 }
 
 .result {
@@ -72,4 +73,12 @@ button {
 
 label {
   font-weight: 500;
+}
+
+#result-num-trips {
+  width: 80%;
+}
+
+#result {
+  width: 80%;
 }
