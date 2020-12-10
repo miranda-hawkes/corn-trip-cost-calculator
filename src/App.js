@@ -6,18 +6,23 @@ import Button from 'react-bootstrap/Button'
 import './App.css';
 import { Jumbotron } from 'react-bootstrap';
 
-function App({calculate}) {
+function App({tripPlanner, calculate}) {
   const [costOfTrip, setCostOfTrip] = useState(0);
   const [numTrips, setNumTrips] = useState(0);
   const [clear, setClear] = useState(false);
   const [showResults, setShowResults] = useState(false)
+<<<<<<< HEAD
   const numBagsSelector = "#num-bags";
   const numGeeseSelector = "#num-geese";
+=======
+  const [tripDetails, setTripDetails] = useState([])
+>>>>>>> 0ccbb649b975ab5899d9c2cd6e73256475e6aa19
 
   const Calculate = (e) => {
     e.preventDefault();
 
     if(clear) setClear(false);
+<<<<<<< HEAD
 
     let numBags = document.querySelector(numBagsSelector).value
     let numGeese = document.querySelector(numGeeseSelector).value
@@ -33,6 +38,25 @@ function App({calculate}) {
     
     document.querySelector(numBagsSelector).value = "";
     document.querySelector(numGeeseSelector).value = "";
+=======
+    let numBags = document.querySelector('#num-bags').value || 0
+    let numGeese = document.querySelector('#num-geese').value || 0
+    let possibleTrips = tripPlanner(numBags, numGeese).map(trip => trip.trip);
+    if(possibleTrips.length > 0) {
+    let trip = possibleTrips[0];
+      setCostOfTrip(calculate(trip.length));
+      setTripDetails(trip);
+      setNumTrips(trip.length);
+    } else {
+      setCostOfTrip(0);
+      setTripDetails([]);
+      setNumTrips(0);
+    }
+    setShowResults(true);
+    
+    document.querySelector('#num-bags').value = "";
+    document.querySelector('#num-geese').value = "";
+>>>>>>> 0ccbb649b975ab5899d9c2cd6e73256475e6aa19
   }
 
   const ItemName = (element) => {
@@ -44,7 +68,7 @@ function App({calculate}) {
   function TripInstructions() {
 
     // temporary array
-    const trips = ["g", "e", "c", "g", "c", "e", "g"];
+    const trips = tripDetails;//["g", "e", "c", "g", "c", "e", "g"];
 
     let tripDescriptions = trips.map ( function(trip, index) {
       const direction = (index % 2 === 0) ? " to the market shore" : " back home";
@@ -109,6 +133,7 @@ function App({calculate}) {
         <h1 className="text-center">Corn & Geese Trip Calculator</h1>
       </div>
       <div className="d-flex p-12">
+<<<<<<< HEAD
         <Form>
           <Row>
             <Col xs lg="12">
@@ -132,6 +157,35 @@ function App({calculate}) {
             </Col>
           </Row>
         </Form>
+=======
+          <Form>
+            <Row>
+              <Col xs lg="12">
+                <Form.Group controlId="num-bags">
+                  <Form.Control type="number" placeholder="Number of bags of corn" />
+                </Form.Group>
+              </Col>
+            </Row>
+
+            <Row>
+              <Col xs lg="12">
+                <Form.Group controlId="num-geese">
+                  <Form.Control type="number" placeholder="Number of geese" />
+                </Form.Group>
+              </Col>
+            </Row>
+
+            <Row className="result-row">
+              <Col xs lg="12">
+                <Button variant="primary" type="submit" onClick={Calculate}>
+                  Calculate
+                </Button>
+              </Col>
+            </Row>
+
+
+          </Form>
+>>>>>>> 0ccbb649b975ab5899d9c2cd6e73256475e6aa19
       </div>
 
       { showResults ? <Results /> : null }
