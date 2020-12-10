@@ -30,10 +30,13 @@ describe('tripPlanner', () => {
         trips = tripPlanner(3,1);
         expectNoSolutions(trips)
     })
-    it('should produce no trips for impossible states', () => {
+    it('should produce longest trip', () => {
         let trips = tripPlanner(1,2);
         expectOneSolution(trips);
         expect(trips[0].trip.join('')).toBe('cegcgec')
+        trips = tripPlanner(2,1);
+        expectOneSolution(trips);
+        expect(trips[0].trip.join('')).toBe('gecgceg')
     })
 })
 

@@ -25,7 +25,7 @@ const weDidTwoEmptyTrips = (tripState) => tripState.trip.join('').endsWith('ee')
 const weDidTwoCornTrips = (tripState) => tripState.trip.join('').endsWith('cc')
 const weDidTwoGeeseTrips = (tripState) => tripState.trip.join('').endsWith('gg')
 
-const weFailedTrip = (tripState) => 
+const theTripHasFailed = (tripState) => 
     weAreOnStartBank(tripState) && destinationBankHasCorn(tripState) && destinationBankHasGoose(tripState) ||
     weAreOnDestinationBank(tripState) && startBankHasCorn(tripState) && startBankHasGoose(tripState) ||
     weDidTwoEmptyTrips(tripState) ||
@@ -37,71 +37,81 @@ const gotGoose = (tripState) => weAreOnStartBank(tripState) ? tripState.startBan
 
 const theTripIsComplete = (tripState) => startBankIsEmpty(tripState) && weAreOnDestinationBank(tripState);
 
+const moveGooseToStartBank = (tripState) => ({
+    startBank: {
+        numBagsOfCorn: tripState.startBank.numBagsOfCorn,
+        numberOfGeese: tripState.startBank.numberOfGeese + 1
+    },
+    destinationBank: {
+        numBagsOfCorn: tripState.destinationBank.numBagsOfCorn,
+        numberOfGeese: tripState.destinationBank.numberOfGeese - 1
+    },
+    trip: tripState.trip.concat(['g'])
+});
+
+const moveGooseToDestinationBank = (tripState) => ({
+    startBank: {
+        numBagsOfCorn: tripState.startBank.numBagsOfCorn,
+        numberOfGeese: tripState.startBank.numberOfGeese - 1
+    },
+    destinationBank: {
+        numBagsOfCorn: tripState.destinationBank.numBagsOfCorn,
+        numberOfGeese: tripState.destinationBank.numberOfGeese + 1
+    },
+    trip: tripState.trip.concat(['g'])
+});
+
+const moveCornToStartBank = (tripState) => ({
+    startBank: {
+        numBagsOfCorn: tripState.startBank.numBagsOfCorn + 1,
+        numberOfGeese: tripState.startBank.numberOfGeese
+    },
+    destinationBank: {
+        numBagsOfCorn: tripState.destinationBank.numBagsOfCorn - 1,
+        numberOfGeese: tripState.destinationBank.numberOfGeese
+    },
+    trip: tripState.trip.concat(['c'])
+});
+
+const moveCornToDestinationBank = (tripState) => ({
+    startBank: {
+        numBagsOfCorn: tripState.startBank.numBagsOfCorn - 1,
+        numberOfGeese: tripState.startBank.numberOfGeese
+    },
+    destinationBank: {
+        numBagsOfCorn: tripState.destinationBank.numBagsOfCorn + 1,
+        numberOfGeese: tripState.destinationBank.numberOfGeese
+    },
+    trip: tripState.trip.concat(['c'])
+});
+
+const addEmptyTrip = tripState => ({ ...tripState, trip: tripState.trip.concat(['e']) })
+
 const moveSearcher = (tripState) => {
     if (theTripIsComplete(tripState)) {
         return [tripState];
     }
-    if (weFailedTrip(tripState)) {
+    if (theTripHasFailed(tripState)) {
         return [{...tripState, trip: tripState.trip.concat(['x'])}];
     }
     let nextStates = [];
     if (weAreOnStartBank(tripState)) {
         if (gotCorn(tripState)) {
-            nextStates = nextStates.concat([{
-                startBank: {
-                    numBagsOfCorn: tripState.startBank.numBagsOfCorn - 1,
-                    numberOfGeese: tripState.startBank.numberOfGeese
-                },
-                destinationBank: {
-                    numBagsOfCorn: tripState.destinationBank.numBagsOfCorn + 1,
-                    numberOfGeese: tripState.destinationBank.numberOfGeese
-                },
-                trip: tripState.trip.concat(['c'])
-            }])
+            nextStates = nextStates.concat([moveCornToDestinationBank(tripState)])
         }
         if (gotGoose(tripState)) {
-            nextStates = nextStates.concat([{
-                startBank: {
-                    numBagsOfCorn: tripState.startBank.numBagsOfCorn,
-                    numberOfGeese: tripState.startBank.numberOfGeese - 1
-                },
-                destinationBank: {
-                    numBagsOfCorn: tripState.destinationBank.numBagsOfCorn,
-                    numberOfGeese: tripState.destinationBank.numberOfGeese + 1
-                },
-                trip: tripState.trip.concat(['g'])
-            }])
+            nextStates = nextStates.concat([moveGooseToDestinationBank(tripState)])
         }
-        nextStates = nextStates.concat([{ ...tripState, trip: tripState.trip.concat(['e']) }])
+        nextStates = nextStates.concat([addEmptyTrip(tripState)])
         
     } else {
         if (gotCorn(tripState)) {
-            nextStates = nextStates.concat([{
-                startBank: {
-                    numBagsOfCorn: tripState.startBank.numBagsOfCorn + 1,
-                    numberOfGeese: tripState.startBank.numberOfGeese
-                },
-                destinationBank: {
-                    numBagsOfCorn: tripState.destinationBank.numBagsOfCorn - 1,
-                    numberOfGeese: tripState.destinationBank.numberOfGeese
-                },
-                trip: tripState.trip.concat(['c'])
-            }])
+            nextStates = nextStates.concat([moveCornToStartBank(tripState)])
         }
         if (gotGoose(tripState)) {
-            nextStates = nextStates.concat([{
-                startBank: {
-                    numBagsOfCorn: tripState.startBank.numBagsOfCorn,
-                    numberOfGeese: tripState.startBank.numberOfGeese + 1
-                },
-                destinationBank: {
-                    numBagsOfCorn: tripState.destinationBank.numBagsOfCorn,
-                    numberOfGeese: tripState.destinationBank.numberOfGeese - 1
-                },
-                trip: tripState.trip.concat(['g'])
-            }])
+            nextStates = nextStates.concat([moveGooseToStartBank(tripState)])
         }
-        nextStates = nextStates.concat([{ ...tripState, trip: tripState.trip.concat(['e']) }])
+        nextStates = nextStates.concat([addEmptyTrip(tripState)])
     }
     return nextStates.reduce((acc, trip) => acc.concat(moveSearcher(trip)), []);
 };
