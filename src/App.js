@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form'
@@ -99,7 +99,7 @@ function App({tripPlanner, calculate}) {
             tripDescriptions.map ( function(description, index) {
               return (
                 <li key={index}>
-                  {description.text} <img src={description.icon} width="32"></img>
+                  {description.text} <img src={description.icon} width="32" alt="Activity icon"></img>
                 </li>
               );
             })
@@ -108,7 +108,6 @@ function App({tripPlanner, calculate}) {
     )
   }
   function Pagination() {
-    let page = currentPage;
     if(numPages > 0) {
       return (
         <div className="paginate">
@@ -188,7 +187,7 @@ function App({tripPlanner, calculate}) {
 
   return (
     <Jumbotron>
-      <img src={"./corn.png"} id="corn"/>
+      <img src={"./corn.png"} id="corn" alt="Corn"/>
       <div className="d-flex p-12">
         <h1 className="text-center">Corn & Geese Trip Calculator</h1>
       </div>

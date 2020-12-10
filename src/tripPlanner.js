@@ -36,7 +36,7 @@ const moveSearcher = (tripState) => {
     return nextStates.reduce((acc, trip) => acc.concat(moveSearcher(trip)), []);
 };
 
-const homeShoreIsEmpty = (tripState) => tripState.homeShore.numBagsOfCorn == 0 && tripState.homeShore.numberOfGeese == 0;
+const homeShoreIsEmpty = (tripState) => tripState.homeShore.numBagsOfCorn === 0 && tripState.homeShore.numberOfGeese === 0;
 
 const notFailedTrip = tripState => !tripState.trip.join('').endsWith('x');
 
