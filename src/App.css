@@ -89,6 +89,10 @@ label {
   font-size: 0.8rem!important;
 }
 
+#page-num {
+  font-size: 0.9rem!important;
+}
+
 .paginate {
   margin-bottom: 1em;
 }

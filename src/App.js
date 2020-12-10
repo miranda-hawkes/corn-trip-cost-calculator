@@ -111,7 +111,7 @@ function App({tripPlanner, calculate}) {
                   disabled={currentPage === 0}>
             Previous
           </button>
-          Page {currentPage+1} of {numPages-1}
+          <span id="page-num">Page {currentPage+1} of {numPages-1}</span>
           <button className="btn btn-page"
                   disabled={currentPage >= numPages-1}
                   onClick={nextPage}>
