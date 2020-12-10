@@ -80,11 +80,28 @@ label {
   margin-top: 2em;
 }
 
+.btn-page {
+  background-color: yellow!important;
+  border-color: yellow!important;
+  margin-right: 1em;
+  margin-left: 1em;
+  padding: 0 0.5em 0 0.5em!important;
+  font-size: 0.8rem!important;
+}
+
+.paginate {
+  margin-bottom: 1em;
+}
+
 #input-corn, #input-geese {
   background-color: #c73e1d; 
   width: 80%;
   padding-right: 1em;
   color: white;
+}
+
+#cost {
+  margin-bottom: 1.5em;
 }
 
 #display-input {

@@ -104,9 +104,21 @@ function App({tripPlanner, calculate}) {
   function Pagination() {
     let page = currentPage;
     if(numPages > 0) {
-    return (<div>
-      <button className="btn btn-secondary" onClick={previousPage} disabled={currentPage === 0}>Previous</button>Page {currentPage+1} of {numPages-1}<button className="btn btn-secondary" disabled={currentPage >= numPages-1}onClick={nextPage}>Next</button>
-      </div>);
+      return (
+        <div className="paginate">
+          <button className="btn btn-page"
+                  onClick={previousPage}
+                  disabled={currentPage === 0}>
+            Previous
+          </button>
+          Page {currentPage+1} of {numPages-1}
+          <button className="btn btn-page"
+                  disabled={currentPage >= numPages-1}
+                  onClick={nextPage}>
+            Next
+          </button>
+        </div>
+      );
     } else {
       return (<div></div>)
     }
@@ -149,7 +161,7 @@ function App({tripPlanner, calculate}) {
         <DisplayInput />
         <Instructions />
         <Pagination/>
-        <Row className="result-row">
+        <Row className="result-row" id="cost">
           <Col md lg="6" className="result">
             <Form.Label >
               It will take
