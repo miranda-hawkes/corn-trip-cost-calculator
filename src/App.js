@@ -7,56 +7,44 @@ import './App.css';
 import { Jumbotron } from 'react-bootstrap';
 
 function App({tripPlanner, calculate}) {
+  const [numCornInput, setNumCornInput] = useState(0);
+  const [numGeeseInput, setNumGeeseInput] = useState(0);
   const [costOfTrip, setCostOfTrip] = useState(0);
   const [numTrips, setNumTrips] = useState(0);
   const [clear, setClear] = useState(false);
-  const [showResults, setShowResults] = useState(false)
-<<<<<<< HEAD
+  const [showResults, setShowResults] = useState(false);
+  const [impossibleTrip, setImpossibleTrip] = useState(false);
   const numBagsSelector = "#num-bags";
   const numGeeseSelector = "#num-geese";
-=======
-  const [tripDetails, setTripDetails] = useState([])
->>>>>>> 0ccbb649b975ab5899d9c2cd6e73256475e6aa19
+  const [tripDetails, setTripDetails] = useState([]);
 
   const Calculate = (e) => {
     e.preventDefault();
-
     if(clear) setClear(false);
-<<<<<<< HEAD
-
-    let numBags = document.querySelector(numBagsSelector).value
-    let numGeese = document.querySelector(numGeeseSelector).value
-
-    if(numBags === '' || numBags < 1) return;
-    if(numGeese === '' || numBags < 1) return;
-
-    let {numTrips, sum} = calculate(numBags);
-
-    setCostOfTrip(sum);
-    setNumTrips(numTrips);
-    setShowResults(true);
-    
-    document.querySelector(numBagsSelector).value = "";
-    document.querySelector(numGeeseSelector).value = "";
-=======
-    let numBags = document.querySelector('#num-bags').value || 0
-    let numGeese = document.querySelector('#num-geese').value || 0
+    let numBags = document.querySelector(numBagsSelector).value || 0;
+    let numGeese = document.querySelector(numGeeseSelector).value || 0;
     let possibleTrips = tripPlanner(numBags, numGeese).map(trip => trip.trip);
+
+    setNumCornInput(numBags);
+    setNumGeeseInput(numGeese);
+    
     if(possibleTrips.length > 0) {
-    let trip = possibleTrips[0];
+      let trip = possibleTrips[0];
       setCostOfTrip(calculate(trip.length));
       setTripDetails(trip);
       setNumTrips(trip.length);
+      setShowResults(true);
+      setImpossibleTrip(false);
     } else {
       setCostOfTrip(0);
       setTripDetails([]);
       setNumTrips(0);
+      setShowResults(true);
+      setImpossibleTrip(true);
     }
-    setShowResults(true);
     
-    document.querySelector('#num-bags').value = "";
-    document.querySelector('#num-geese').value = "";
->>>>>>> 0ccbb649b975ab5899d9c2cd6e73256475e6aa19
+    document.querySelector(numBagsSelector).value = "";
+    document.querySelector(numGeeseSelector).value = "";
   }
 
   const ItemName = (element) => {
@@ -65,10 +53,20 @@ function App({tripPlanner, calculate}) {
     if (element === "e") return "nothing";
   }
 
+  const DisplayError = () => (
+    <div className="d-flex p-12">
+      <Form>
+        <DisplayInput />
+        <Row id="not-possible">
+            <h3>Not possible!</h3>
+        </Row>
+      </Form>
+    </div>
+  )
+
   function TripInstructions() {
 
-    // temporary array
-    const trips = tripDetails;//["g", "e", "c", "g", "c", "e", "g"];
+    let trips = tripDetails;
 
     let tripDescriptions = trips.map ( function(trip, index) {
       const direction = (index % 2 === 0) ? " to the market shore" : " back home";
@@ -96,16 +94,26 @@ function App({tripPlanner, calculate}) {
     <Row className="result-row">
       <Col md lg="12" className="result">
         <Form.Label >
-          Trip instructions
+          <h3>Trip instructions</h3>
         </Form.Label>
         <TripInstructions />
       </Col>
     </Row>
   )
 
+  const DisplayInput = () => (
+    <Row id="display-input" className="result-row result">
+      <h4>
+        Result for {numCornInput} { numCornInput === '1' ? 'bag ' : 'bags '}
+        of corn and {numGeeseInput} { numGeeseInput === '1' ? 'goose' : 'geese'}:
+      </h4>
+    </Row>
+  )
+
   const Results = () => (
     <div className="d-flex p-12">
       <Form>
+        <DisplayInput />
         <Instructions />
         <Row className="result-row">
           <Col md lg="6" className="result">
@@ -133,7 +141,6 @@ function App({tripPlanner, calculate}) {
         <h1 className="text-center">Corn & Geese Trip Calculator</h1>
       </div>
       <div className="d-flex p-12">
-<<<<<<< HEAD
         <Form>
           <Row>
             <Col xs lg="12">
@@ -157,38 +164,9 @@ function App({tripPlanner, calculate}) {
             </Col>
           </Row>
         </Form>
-=======
-          <Form>
-            <Row>
-              <Col xs lg="12">
-                <Form.Group controlId="num-bags">
-                  <Form.Control type="number" placeholder="Number of bags of corn" />
-                </Form.Group>
-              </Col>
-            </Row>
-
-            <Row>
-              <Col xs lg="12">
-                <Form.Group controlId="num-geese">
-                  <Form.Control type="number" placeholder="Number of geese" />
-                </Form.Group>
-              </Col>
-            </Row>
-
-            <Row className="result-row">
-              <Col xs lg="12">
-                <Button variant="primary" type="submit" onClick={Calculate}>
-                  Calculate
-                </Button>
-              </Col>
-            </Row>
-
-
-          </Form>
->>>>>>> 0ccbb649b975ab5899d9c2cd6e73256475e6aa19
       </div>
 
-      { showResults ? <Results /> : null }
+      { showResults ? (impossibleTrip ? <DisplayError /> : <Results />) : null }
 
     </Jumbotron>
   );

@@ -65,6 +65,7 @@ button {
   background-color: #a14ebf;
   border: 1px solid #a14ebf!important;
   padding-right: 1em;
+  width: 80%;
 }
 
 .result {
@@ -75,10 +76,21 @@ label {
   font-weight: 500;
 }
 
-#result-num-trips {
-  width: 80%;
+#not-possible {
+  margin-top: 2em;
 }
 
-#result {
+#input-corn, #input-geese {
+  background-color: #c73e1d; 
   width: 80%;
+  padding-right: 1em;
+  color: white;
+}
+
+#display-input {
+  margin-top: 2em;
+  margin-bottom: 2em;
+  background-color: #c73e1d; 
+  color: white;
+  padding: 0.5em 1em 0.25em 1em;
 }
