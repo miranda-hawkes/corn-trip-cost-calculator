@@ -13,16 +13,35 @@ const tripPlanner = (numberOfBagsOfCorn = 0, numberOfGeese = 0) => {
         marketShoreStock: { c: 0, g: 0 },
         trip: []
     }
+    let toProcess = [];
+    let computedStates = addComputedStates([state], {});
+    let next = state;
+    let count = 0;
+    do {
+        let nextStates = moveSearcher(next);
+        let activeStates = nextStates.filter(haltingConditions(computedStates));
+        toProcess = toProcess.concat(activeStates.filter(isNotComplete))
+        computedStates = addComputedStates(nextStates, computedStates)
+        next = toProcess.pop(); // find shortest trip
+    } while(next !== undefined && count++ < 100)
 
-    return moveSearcher(state).filter(notFailedTrip);
+    return Object.values(computedStates).reduce((array, values) => array.concat(values), []).filter(notFailedTrip).filter(isCompleted);
 };
+
+const isCompleted = (state) => homeShoreIsEmpty(state) && weAreOnMarketShore(state)
+const isNotComplete = (state) => !isCompleted(state)
+const eat_conditions = [
+    stock => stock[GEESE] > 0 && stock[CORN] > 0,
+];
+const haltingConditions = computedStates => state => computedStates[keyFor(state)] === undefined && !eat_conditions.reduce((passed, condition) => condition(weAreOnHomeShore(state)?state.marketShoreStock:state.homeShoreStock) && passed, true);
+const addComputedStates = (newStates, completedStates) => newStates.reduce((completed, state) => {
+    let key = keyFor(state);
+    let existing = completed[key] || [];
+    return _.set({...completed}, key, existing.concat([state]))
+}, completedStates);
+const keyFor = (state) => `b=${state.trip.length % 2},h=${stockTypes.map(sType => state.homeShoreStock[sType]).join('')},m=${stockTypes.map(sType => state.marketShoreStock[sType]).join('')}`
+
 const moveSearcher = (tripState) => {
-    if (theTripIsComplete(tripState)) {
-        return [tripState];
-    }
-    if (theTripHasFailed(tripState)) {
-        return [failTrip(tripState)];
-    }
     let nextStates = [];
     if (weAreOnHomeShore(tripState)) {
         nextStates = stockTypes.filter(
@@ -39,7 +58,7 @@ const moveSearcher = (tripState) => {
                 nextStates)
         nextStates = nextStates.concat([addEmptyTrip(tripState)])
     }
-    return nextStates.reduce((acc, trip) => acc.concat(moveSearcher(trip)), []);
+    return nextStates;
 };
 
 const hasStock = store => stockType => store[stockType] !== undefined && store[stockType] > 0;
@@ -64,24 +83,6 @@ const notFailedTrip = tripState => !tripState.trip.join('').endsWith(FAILED);
 const weAreOnHomeShore = (tripState) => tripState.trip.length % 2 === 0;
 const weAreOnMarketShore = (tripState) => tripState.trip.length % 2 === 1;
 
-const marketShoreHas = (tripState, stockType) => tripState.marketShoreStock[stockType] > 0;
-
-const homeShoreHas = (tripState, stockType) => tripState.homeShoreStock[stockType] > 0;
-
-const weDidTwoEmptyTrips = (tripState) => tripState.trip.join('').endsWith(EMPTY + EMPTY)
-const weDidTwoCornTrips = (tripState) => tripState.trip.join('').endsWith(CORN + CORN)
-const weDidTwoGeeseTrips = (tripState) => tripState.trip.join('').endsWith(GEESE + GEESE)
-
-const theTripHasFailed = (tripState) =>
-    weAreOnHomeShore(tripState) && marketShoreHas(tripState, CORN) && marketShoreHas(tripState, GEESE) ||
-    weAreOnMarketShore(tripState) && homeShoreHas(tripState, CORN) && homeShoreHas(tripState, GEESE) ||
-    weDidTwoEmptyTrips(tripState) ||
-    weDidTwoCornTrips(tripState) ||
-    weDidTwoGeeseTrips(tripState);
-
-const theTripIsComplete = (tripState) => homeShoreIsEmpty(tripState) && weAreOnMarketShore(tripState);
-
 const addEmptyTrip = tripState => ({ ...tripState, trip: tripState.trip.concat([EMPTY]) })
-const failTrip = tripState => ({ ...tripState, trip: tripState.trip.concat([FAILED]) })
 
 export default tripPlanner;

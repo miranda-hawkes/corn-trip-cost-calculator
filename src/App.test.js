@@ -23,7 +23,7 @@ test('renders default UI elements', () => {
 
 // Actually an integration test, might mock out calls at some point
 test('on button click for possible result, shows instructions', () => {
-  render(<App calculate={calculatorForFerryCost(0.25)} tripPlanner={tripPlanner} />);
+  render(<App calculate={calculatorForFerryCost(0.25)} tripPlanner={() => [{trip:['c','e','g']}]} />);
 
   fireEvent.change(screen.getByPlaceholderText("Number of bags of corn"), {
     target: { value: "1" }
@@ -55,7 +55,7 @@ test('on button click for possible result, shows instructions', () => {
 
 
 test('on button click for impossible result, error', () => {
-  render(<App calculate={calculatorForFerryCost(0.25)} tripPlanner={tripPlanner} />);
+  render(<App calculate={calculatorForFerryCost(0.25)} tripPlanner={() => []} />);
 
   fireEvent.change(screen.getByPlaceholderText("Number of bags of corn"), {
     target: { value: "10" }
