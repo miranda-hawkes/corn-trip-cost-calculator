@@ -2,15 +2,16 @@ import _ from "lodash";
 
 const CORN = 'c';
 const GEESE = 'g';
+const FOXES = 'f';
 const EMPTY = 'e';
 const FAILED = 'x';
 
-const stockTypes = [CORN, GEESE];
+const stockTypes = [CORN, GEESE, FOXES];
 
-const tripPlanner = (numberOfBagsOfCorn = 0, numberOfGeese = 0) => {
+const tripPlanner = (numberOfBagsOfCorn = 0, numberOfGeese = 0, numberOfFoxes = 0) => {
     let state = {
-        homeShoreStock: { c: numberOfBagsOfCorn, g: numberOfGeese },
-        marketShoreStock: { c: 0, g: 0 },
+        homeShoreStock: { c: numberOfBagsOfCorn, g: numberOfGeese, f: numberOfFoxes },
+        marketShoreStock: { c: 0, g: 0, f: 0 },
         trip: []
     }
     let toProcess = [];
@@ -19,8 +20,7 @@ const tripPlanner = (numberOfBagsOfCorn = 0, numberOfGeese = 0) => {
     let count = 0;
     do {
         let nextStates = moveSearcher(next);
-        let activeStates = nextStates.filter(haltingConditions(computedStates));
-        toProcess = toProcess.concat(activeStates.filter(isNotComplete))
+        toProcess = toProcess.concat(nextStates.filter(haltingConditions(computedStates)).filter(isNotComplete))
         computedStates = addComputedStates(nextStates, computedStates)
         next = toProcess.pop(); // find shortest trip
     } while(next !== undefined && count++ < 100)
@@ -32,8 +32,9 @@ const isCompleted = (state) => homeShoreIsEmpty(state) && weAreOnMarketShore(sta
 const isNotComplete = (state) => !isCompleted(state)
 const eat_conditions = [
     stock => stock[GEESE] > 0 && stock[CORN] > 0,
+    stock => stock[FOXES] > 0 && stock[GEESE] > 0,
 ];
-const haltingConditions = computedStates => state => computedStates[keyFor(state)] === undefined && !eat_conditions.reduce((passed, condition) => condition(weAreOnHomeShore(state)?state.marketShoreStock:state.homeShoreStock) && passed, true);
+const haltingConditions = computedStates => state => computedStates[keyFor(state)] === undefined && !eat_conditions.reduce((passed, condition) => condition(weAreOnHomeShore(state)?state.marketShoreStock:state.homeShoreStock) || passed, false);
 const addComputedStates = (newStates, completedStates) => newStates.reduce((completed, state) => {
     let key = keyFor(state);
     let existing = completed[key] || [];

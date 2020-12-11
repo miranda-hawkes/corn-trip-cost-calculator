@@ -38,6 +38,12 @@ describe('tripPlanner', () => {
         expectOneSolution(trips);
         expect(trips[0].trip.join('')).toBe('gecgceg')
     })
+    it('should solve for corn, goose and fox', () => {
+        let trips = tripPlanner(1,1,1);
+        expectOneSolution(trips)
+        trips = trips.map(trip => trip.trip.join('')).sort();
+        expect(trips).toEqual(['gefgceg'])
+    })
 })
 
 const expectOneSolution = (trips) => expect(trips).toHaveLength(1);
