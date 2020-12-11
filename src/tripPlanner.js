@@ -1,7 +1,16 @@
-const tripPlanner = (numBagsOfCorn = 0, numberOfGeese = 0) => {
+import _ from "lodash";
+
+const CORN = 'c';
+const GEESE = 'g';
+const EMPTY = 'e';
+const FAILED = 'x';
+
+const stockTypes = [CORN, GEESE];
+
+const tripPlanner = (numberOfBagsOfCorn = 0, numberOfGeese = 0) => {
     let state = {
-        homeShore: { numBagsOfCorn, numberOfGeese },
-        marketShore: { numBagsOfCorn: 0, numberOfGeese: 0 },
+        homeShoreStock: { c: numberOfBagsOfCorn, g: numberOfGeese },
+        marketShoreStock: { c: 0, g: 0 },
         trip: []
     }
 
@@ -16,104 +25,63 @@ const moveSearcher = (tripState) => {
     }
     let nextStates = [];
     if (weAreOnHomeShore(tripState)) {
-        if (gotCorn(tripState)) {
-            nextStates = nextStates.concat([moveCornToMarketShore(tripState)])
-        }
-        if (gotGoose(tripState)) {
-            nextStates = nextStates.concat([moveGooseToMarketShore(tripState)])
-        }
+        nextStates = stockTypes.filter(
+            hasStock(tripState.homeShoreStock)
+            ).reduce(
+                (states, stockType) => states.concat(moveStockToMarketShore(stockType, tripState)), 
+                nextStates)
         nextStates = nextStates.concat([addEmptyTrip(tripState)])
-
     } else {
-        if (gotCorn(tripState)) {
-            nextStates = nextStates.concat([moveCornToHomeShore(tripState)])
-        }
-        if (gotGoose(tripState)) {
-            nextStates = nextStates.concat([moveGooseToHomeShore(tripState)])
-        }
+        nextStates = stockTypes.filter(
+            hasStock(tripState.marketShoreStock)
+            ).reduce(
+                (states, stockType) => states.concat(moveStockToHomeShore(stockType, tripState)), 
+                nextStates)
         nextStates = nextStates.concat([addEmptyTrip(tripState)])
     }
     return nextStates.reduce((acc, trip) => acc.concat(moveSearcher(trip)), []);
 };
 
-const homeShoreIsEmpty = (tripState) => tripState.homeShore.numBagsOfCorn == 0 && tripState.homeShore.numberOfGeese == 0;
+const hasStock = store => stockType => store[stockType] !== undefined && store[stockType] > 0;
 
-const notFailedTrip = tripState => !tripState.trip.join('').endsWith('x');
+const moveStockToMarketShore = (stock, state) => ({
+    ...state, 
+    homeShoreStock: _.set({...state.homeShoreStock}, stock, state.homeShoreStock[stock] - 1), 
+    marketShoreStock: _.set({...state.marketShoreStock}, stock, state.marketShoreStock[stock] + 1), 
+    trip: state.trip.concat(stock)
+})
+const moveStockToHomeShore = (stock, state) => ({
+    ...state, 
+    homeShoreStock: _.set({...state.homeShoreStock}, stock, state.homeShoreStock[stock] + 1), 
+    marketShoreStock: _.set({...state.marketShoreStock}, stock, state.marketShoreStock[stock] - 1), 
+    trip: state.trip.concat(stock)
+})
+
+const homeShoreIsEmpty = (tripState) => Object.keys(tripState.homeShoreStock).reduce((count, stockType) => count + tripState.homeShoreStock[stockType], 0) == 0;
+
+const notFailedTrip = tripState => !tripState.trip.join('').endsWith(FAILED);
 
 const weAreOnHomeShore = (tripState) => tripState.trip.length % 2 === 0;
 const weAreOnMarketShore = (tripState) => tripState.trip.length % 2 === 1;
 
-const marketShoreHasCorn = (tripState) => tripState.marketShore.numBagsOfCorn > 0;
-const marketShoreHasGoose = (tripState) => tripState.marketShore.numberOfGeese > 0;
+const marketShoreHas = (tripState, stockType) => tripState.marketShoreStock[stockType] > 0;
 
-const homeShoreHasCorn = (tripState) => tripState.homeShore.numBagsOfCorn > 0;
-const homeShoreHasGoose = (tripState) => tripState.homeShore.numberOfGeese > 0;
+const homeShoreHas = (tripState, stockType) => tripState.homeShoreStock[stockType] > 0;
 
-const weDidTwoEmptyTrips = (tripState) => tripState.trip.join('').endsWith('ee')
-const weDidTwoCornTrips = (tripState) => tripState.trip.join('').endsWith('cc')
-const weDidTwoGeeseTrips = (tripState) => tripState.trip.join('').endsWith('gg')
+const weDidTwoEmptyTrips = (tripState) => tripState.trip.join('').endsWith(EMPTY + EMPTY)
+const weDidTwoCornTrips = (tripState) => tripState.trip.join('').endsWith(CORN + CORN)
+const weDidTwoGeeseTrips = (tripState) => tripState.trip.join('').endsWith(GEESE + GEESE)
 
 const theTripHasFailed = (tripState) =>
-    weAreOnHomeShore(tripState) && marketShoreHasCorn(tripState) && marketShoreHasGoose(tripState) ||
-    weAreOnMarketShore(tripState) && homeShoreHasCorn(tripState) && homeShoreHasGoose(tripState) ||
+    weAreOnHomeShore(tripState) && marketShoreHas(tripState, CORN) && marketShoreHas(tripState, GEESE) ||
+    weAreOnMarketShore(tripState) && homeShoreHas(tripState, CORN) && homeShoreHas(tripState, GEESE) ||
     weDidTwoEmptyTrips(tripState) ||
     weDidTwoCornTrips(tripState) ||
     weDidTwoGeeseTrips(tripState);
 
-const gotCorn = (tripState) => weAreOnHomeShore(tripState) ? tripState.homeShore.numBagsOfCorn > 0 : tripState.marketShore.numBagsOfCorn > 0
-const gotGoose = (tripState) => weAreOnHomeShore(tripState) ? tripState.homeShore.numberOfGeese > 0 : tripState.marketShore.numberOfGeese > 0
-
 const theTripIsComplete = (tripState) => homeShoreIsEmpty(tripState) && weAreOnMarketShore(tripState);
 
-const moveGooseToHomeShore = (tripState) => ({
-    homeShore: {
-        numBagsOfCorn: tripState.homeShore.numBagsOfCorn,
-        numberOfGeese: tripState.homeShore.numberOfGeese + 1
-    },
-    marketShore: {
-        numBagsOfCorn: tripState.marketShore.numBagsOfCorn,
-        numberOfGeese: tripState.marketShore.numberOfGeese - 1
-    },
-    trip: tripState.trip.concat(['g'])
-});
-
-const moveGooseToMarketShore = (tripState) => ({
-    homeShore: {
-        numBagsOfCorn: tripState.homeShore.numBagsOfCorn,
-        numberOfGeese: tripState.homeShore.numberOfGeese - 1
-    },
-    marketShore: {
-        numBagsOfCorn: tripState.marketShore.numBagsOfCorn,
-        numberOfGeese: tripState.marketShore.numberOfGeese + 1
-    },
-    trip: tripState.trip.concat(['g'])
-});
-
-const moveCornToHomeShore = (tripState) => ({
-    homeShore: {
-        numBagsOfCorn: tripState.homeShore.numBagsOfCorn + 1,
-        numberOfGeese: tripState.homeShore.numberOfGeese
-    },
-    marketShore: {
-        numBagsOfCorn: tripState.marketShore.numBagsOfCorn - 1,
-        numberOfGeese: tripState.marketShore.numberOfGeese
-    },
-    trip: tripState.trip.concat(['c'])
-});
-
-const moveCornToMarketShore = (tripState) => ({
-    homeShore: {
-        numBagsOfCorn: tripState.homeShore.numBagsOfCorn - 1,
-        numberOfGeese: tripState.homeShore.numberOfGeese
-    },
-    marketShore: {
-        numBagsOfCorn: tripState.marketShore.numBagsOfCorn + 1,
-        numberOfGeese: tripState.marketShore.numberOfGeese
-    },
-    trip: tripState.trip.concat(['c'])
-});
-
-const addEmptyTrip = tripState => ({ ...tripState, trip: tripState.trip.concat(['e']) })
-const failTrip = tripState => ({ ...tripState, trip: tripState.trip.concat(['x']) })
+const addEmptyTrip = tripState => ({ ...tripState, trip: tripState.trip.concat([EMPTY]) })
+const failTrip = tripState => ({ ...tripState, trip: tripState.trip.concat([FAILED]) })
 
 export default tripPlanner;

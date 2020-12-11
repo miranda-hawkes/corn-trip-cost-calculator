@@ -99,7 +99,7 @@ function App({tripPlanner, calculate}) {
             tripDescriptions.map ( function(description, index) {
               return (
                 <li key={index}>
-                  {description.text} <img src={description.icon} width="32" alt="Activity icon"></img>
+                  {description.text}<img src={description.icon} width="32" alt="Activity icon"></img>
                 </li>
               );
             })
