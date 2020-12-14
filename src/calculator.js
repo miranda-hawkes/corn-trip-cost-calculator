@@ -1,1 +1,3 @@
-export default (ferryCostPerTrip) => (numTrips) => numTrips * ferryCostPerTrip;
+const calculator = (ferryCostPerTrip) => (numTrips) => numTrips * ferryCostPerTrip;
+
+export default calculator;
